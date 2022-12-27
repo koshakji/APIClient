@@ -39,7 +39,7 @@ public struct Group: GroupProtocol {
     public let port: Int?
     public let path: String
     
-    init(scheme: String = "https", host: String, port: Int? = nil, path: String) {
+    public init(scheme: String = "https", host: String, port: Int? = nil, path: String) {
         self.scheme = scheme
         self.host = host
         self.port = port
