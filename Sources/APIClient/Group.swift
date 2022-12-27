@@ -15,7 +15,7 @@ public protocol GroupProtocol {
 }
 
 public extension GroupProtocol {
-    func endpoint<Body, Headers, Queries, Response>(path: String, method: HTTPMethod = .get, queries: Queries) -> AdvancedRequest<Body, Headers, Queries, Response> {
+    func endpoint<Body, Headers, Queries, Response>(path: String, method: HTTPMethod = .get, queries: Queries? = nil) -> AdvancedRequest<Body, Headers, Queries, Response> {
         .init(scheme: self.scheme, host: self.host, port: self.port, path: self.path + path, method: method, queries: queries)
     }
     
