@@ -8,6 +8,7 @@
 import Foundation
 
 @available(macOS 10.15.0, *)
+@available(iOS 13.0, *)
 public protocol AsyncClient: BaseClient {
     func make<Request: RequestProtocol>(
         request: Request,
@@ -18,6 +19,7 @@ public protocol AsyncClient: BaseClient {
 
 
 @available(macOS 10.15.0, *)
+@available(iOS 13.0, *)
 public extension AsyncClient {
     func make<Request: RequestProtocol>(
         request: Request,
@@ -37,6 +39,7 @@ public extension AsyncClient {
 }
 
 @available(macOS 10.15.0, *)
+@available(iOS 13.0, *)
 public extension AsyncClient {
     func make<Request: RequestProtocol>(request: Request, headers: Request.Headers) async -> Result<Response<Request.Response>, Error> where Request.Body == Nothing {
         return await make(request: request, body: .init(), headers: headers)
@@ -60,6 +63,7 @@ public extension AsyncClient {
 }
 
 @available(macOS 10.15.0, *)
+@available(iOS 13.0, *)
 public extension AsyncClient {
     func make<Request: RequestProtocol>(request: Request, headers: Request.Headers) async -> Result<Request.Response, Error> where Request.Body == Nothing {
         return await make(request: request, headers: headers).map(\.data)

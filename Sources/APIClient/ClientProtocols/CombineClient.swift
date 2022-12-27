@@ -9,12 +9,14 @@ import Foundation
 import Combine
 
 @available(macOS 10.15.0, *)
+@available(iOS 13.0, *)
 public protocol CombineClient: BaseClient {
     func publisher<Request: RequestProtocol>(request: Request, body: Request.Body, headers: Request.Headers) -> AnyPublisher<Response<Request.Response>, Error>
 }
 
 
 @available(macOS 10.15.0, *)
+@available(iOS 13.0, *)
 public extension CombineClient {
     func publisher<Request: RequestProtocol>(request: Request, body: Request.Body, headers: Request.Headers) -> AnyPublisher<Response<Request.Response>, Error> {
         do {
@@ -32,6 +34,7 @@ public extension CombineClient {
 }
 
 @available(macOS 10.15.0, *)
+@available(iOS 13.0, *)
 public extension CombineClient {
     func publisher<Request: RequestProtocol>(request: Request, headers: Request.Headers) -> AnyPublisher<Response<Request.Response>, Error> where Request.Body == Nothing {
         return self.publisher(request: request, body: .init(), headers: headers)
@@ -55,6 +58,7 @@ public extension CombineClient {
 }
 
 @available(macOS 10.15.0, *)
+@available(iOS 13.0, *)
 public extension CombineClient {
     func publisher<Request: RequestProtocol>(request: Request, headers: Request.Headers) -> AnyPublisher<Request.Response, Error> where Request.Body == Nothing {
         return self.publisher(request: request, headers: headers).map(\.data).eraseToAnyPublisher()
