@@ -48,12 +48,12 @@ public extension CombineClient {
         return self.publisher(request: request, body: .init())
     }
     
-    func publisher<Request: RequestProtocol>(request: Request, body: Request.Body, headers: [String: String] = [:]) -> AnyPublisher<Response<Request.Response>, Error> where Request.Headers == [String: String] {
-        return self.publisher(request: request, body: body, headers: headers)
+    func publisher<Request: RequestProtocol>(request: Request, body: Request.Body) -> AnyPublisher<Response<Request.Response>, Error> where Request.Headers == [String: String] {
+        return self.publisher(request: request, body: body, headers: [:])
     }
     
-    func publisher<Request: RequestProtocol>(request: Request, headers: [String: String] = [:]) -> AnyPublisher<Response<Request.Response>, Error> where Request.Body == Nothing, Request.Headers == [String: String] {
-        return self.publisher(request: request, body: .init(), headers: headers)
+    func publisher<Request: RequestProtocol>(request: Request) -> AnyPublisher<Response<Request.Response>, Error> where Request.Body == Nothing, Request.Headers == [String: String] {
+        return self.publisher(request: request, body: .init())
     }
 }
 
@@ -72,11 +72,11 @@ public extension CombineClient {
         return self.publisher(request: request).map(\.data).eraseToAnyPublisher()
     }
     
-    func publisher<Request: RequestProtocol>(request: Request, body: Request.Body, headers: [String: String] = [:]) -> AnyPublisher<Request.Response, Error> where Request.Headers == [String: String] {
-        return self.publisher(request: request, body: body, headers: headers).map(\.data).eraseToAnyPublisher()
+    func publisher<Request: RequestProtocol>(request: Request, body: Request.Body) -> AnyPublisher<Request.Response, Error> where Request.Headers == [String: String] {
+        return self.publisher(request: request, body: body).map(\.data).eraseToAnyPublisher()
     }
     
-    func publisher<Request: RequestProtocol>(request: Request, headers: [String: String] = [:]) -> AnyPublisher<Request.Response, Error> where Request.Body == Nothing, Request.Headers == [String: String] {
-        return self.publisher(request: request, headers: headers).map(\.data).eraseToAnyPublisher()
+    func publisher<Request: RequestProtocol>(request: Request) -> AnyPublisher<Request.Response, Error> where Request.Body == Nothing, Request.Headers == [String: String] {
+        return self.publisher(request: request).map(\.data).eraseToAnyPublisher()
     }
 }
