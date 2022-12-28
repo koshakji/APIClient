@@ -47,7 +47,7 @@ let cancellable = client.publisher(request: listUsers).sink(
 ```
 3. Using a completion handler:
 ```swift
-client.make(request: listUsers) { (result: Result<Response<[User]>,
+client.make(request: listUsers) { (result: Result<Response<[User]>, Error>) in
     switch result.map(\.data) {
     case .success(let users):
         print("Completion: \(users.count)")
