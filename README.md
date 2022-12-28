@@ -12,15 +12,15 @@ let client = APIClient()
 
 Then a request:
 ```swift
-let group = Group(host: "jsonplaceholder.typicode.com", path: "/")
-let request: Request<Nothing, [User]> = group.endpoint(path: "users")
+let users = Group(host: "jsonplaceholder.typicode.com", path: "/users")
+let listUsers: Request<Nothing, [User]> = users.endpoint(path: "/")
 ```
 `Nothing` is the request's body, and `[User]` is the response
 
 And finally you can make that request in three different ways:
 1. Using async/await:
 ```swift
-let result: Result<[User], Error> = await client.make(request: request)
+let result: Result<[User], Error> = await client.make(request: listUsers)
     
 switch result {
 case .success(let users):
@@ -31,7 +31,7 @@ case .failure(let error):
 ```
 2. Using Combine:
 ```swift
-let cancellable = client.publisher(request: request).sink(
+let cancellable = client.publisher(request: listUsers).sink(
     receiveCompletion: { completion in
         switch completion {
         case .failure(let error):
@@ -47,7 +47,7 @@ let cancellable = client.publisher(request: request).sink(
 ```
 3. Using a completion handler:
 ```swift
-client.make(request: request) { (result: Result<Response<[User]>, Error>) in
+client.make(request: listUsers) { (result: Result<Response<[User]>,
     switch result.map(\.data) {
     case .success(let users):
         print("Completion: \(users.count)")
