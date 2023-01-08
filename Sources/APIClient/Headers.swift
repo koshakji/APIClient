@@ -21,7 +21,7 @@ extension Dictionary: StringDictionaryConvertible where Key == String, Value == 
     public func dictionary() -> [String : String] { return self }
 }
 
-public struct AuthenticatedHeaders<Others: StringDictionaryConvertible>: StringDictionaryConvertible {
+public struct BearerHeaders<Others: StringDictionaryConvertible>: StringDictionaryConvertible {
     let token: String
     let otherHeaders: Others
     
@@ -37,13 +37,13 @@ public struct AuthenticatedHeaders<Others: StringDictionaryConvertible>: StringD
     }
 }
 
-public extension AuthenticatedHeaders where Others == Nothing {
+public extension BearerHeaders where Others == Nothing {
     init(token: String) {
         self.init(token: token, otherHeaders: .init())
     }
 }
 
-public extension AuthenticatedHeaders where Others == [String: String] {
+public extension BearerHeaders where Others == [String: String] {
     init(token: String) {
         self.init(token: token, otherHeaders: [:])
     }

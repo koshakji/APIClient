@@ -113,4 +113,4 @@ public extension AdvancedRequest where Queries == Nothing {
 }
 
 public typealias Request<Body, Response> = AdvancedRequest<Body, [String: String], [String: String], Response> where Body: Encodable, Response: Decodable
-public typealias AuthenticatedRequest<Body, Response> = AdvancedRequest<Body, AuthenticatedHeaders<[String: String]>, [String: String], Response> where Body: Encodable, Response: Decodable
+public typealias AuthenticatedRequest<Body, Response> = AdvancedRequest<Body, BearerHeaders<[String: String]>, [String: String], Response> where Body: Encodable, Response: Decodable
