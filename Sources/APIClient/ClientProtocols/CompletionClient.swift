@@ -1,18 +1,18 @@
 //
-//  CallbackClient.swift
+//  CompletionClient.swift
 //  
 //
 //  Created by Majd Koshakji on 27/12/22.
 //
 
-public protocol CallbackClient: BaseClient {
-    typealias Callback<Request: RequestProtocol> = (Result<Response<Request.Response>, Error>) -> Void
+public protocol CompletionClient: BaseClient {
+    typealias Completion<Request: RequestProtocol> = (Result<Response<Request.Response>, Error>) -> Void
     
-    func make<Request: RequestProtocol>(request: Request, body: Request.Body, headers: Request.Headers, completion: @escaping Callback<Request>)
+    func make<Request: RequestProtocol>(request: Request, body: Request.Body, headers: Request.Headers, completion: @escaping Completion<Request>)
 }
 
-public extension CallbackClient {
-    func make<Request: RequestProtocol>(request: Request, body: Request.Body, headers: Request.Headers, completion: @escaping Callback<Request>) {
+public extension CompletionClient {
+    func make<Request: RequestProtocol>(request: Request, body: Request.Body, headers: Request.Headers, completion: @escaping Completion<Request>) {
         do {
             let request = try self.createURLRequest(endpoint: request, body: body, headers: headers)
             session.dataTask(with: request) { [decoder] data, response, error in
@@ -36,25 +36,25 @@ public extension CallbackClient {
     }
 }
 
-public extension CallbackClient {
-    func make<Request: RequestProtocol>(request: Request, headers: Request.Headers, completion: @escaping Callback<Request>) where Request.Body == Nothing  {
+public extension CompletionClient {
+    func make<Request: RequestProtocol>(request: Request, headers: Request.Headers, completion: @escaping Completion<Request>) where Request.Body == Nothing  {
         self.make(request: request, body: .init(), headers: headers, completion: completion)
     }
     
-    func make<Request: RequestProtocol>(request: Request, body: Request.Body, completion: @escaping Callback<Request>) where Request.Headers == Nothing  {
+    func make<Request: RequestProtocol>(request: Request, body: Request.Body, completion: @escaping Completion<Request>) where Request.Headers == Nothing  {
         self.make(request: request, body: body, headers: .init(), completion: completion)
     }
     
     
-    func make<Request: RequestProtocol>(request: Request, completion: @escaping Callback<Request>) where Request.Body == Nothing, Request.Headers == Nothing  {
+    func make<Request: RequestProtocol>(request: Request, completion: @escaping Completion<Request>) where Request.Body == Nothing, Request.Headers == Nothing  {
         self.make(request: request, body: .init(), headers: .init(), completion: completion)
     }
     
-    func make<Request: RequestProtocol>(request: Request, body: Request.Body, completion: @escaping Callback<Request>) where Request.Headers == [String: String] {
+    func make<Request: RequestProtocol>(request: Request, body: Request.Body, completion: @escaping Completion<Request>) where Request.Headers == [String: String] {
         self.make(request: request, body: body, headers: [:], completion: completion)
     }
     
-    func make<Request: RequestProtocol>(request: Request, completion: @escaping Callback<Request>) where Request.Body == Nothing, Request.Headers == [String: String]  {
+    func make<Request: RequestProtocol>(request: Request, completion: @escaping Completion<Request>) where Request.Body == Nothing, Request.Headers == [String: String]  {
         self.make(request: request, body: .init(), headers: [:], completion: completion)
     }
 }
