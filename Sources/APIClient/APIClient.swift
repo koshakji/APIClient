@@ -27,4 +27,4 @@ public struct APIClient: BaseClient {
     }
 }
 
-extension APIClient: CallbackClient, AsyncClient, CombineClient {}
+extension APIClient: CompletionClient, AsyncClient, CombineClient {}
