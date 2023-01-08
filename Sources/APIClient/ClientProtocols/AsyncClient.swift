@@ -61,27 +61,3 @@ public extension AsyncClient {
         return await self.make(request: request, body: .init(), headers: [:])
     }
 }
-
-@available(macOS 10.15.0, *)
-@available(iOS 13.0, *)
-public extension AsyncClient {
-    func make<Request: RequestProtocol>(request: Request, headers: Request.Headers) async -> Result<Request.Response, Error> where Request.Body == Nothing {
-        return await make(request: request, headers: headers).map(\.data)
-    }
-    
-    func make<Request: RequestProtocol>(request: Request, body: Request.Body) async -> Result<Request.Response, Error> where Request.Headers == Nothing {
-        return await self.make(request: request, body: body).map(\.data)
-    }
-    
-    func make<Request: RequestProtocol>(request: Request) async -> Result<Request.Response, Error> where Request.Body == Nothing, Request.Headers == Nothing {
-        return await self.make(request: request).map(\.data)
-    }
-
-    func make<Request: RequestProtocol>(request: Request, body: Request.Body) async -> Result<Request.Response, Error> where Request.Headers == [String: String] {
-        return await self.make(request: request, body: body).map(\.data)
-    }
-
-    func make<Request: RequestProtocol>(request: Request) async -> Result<Request.Response, Error> where Request.Body == Nothing, Request.Headers == [String: String] {
-        return await self.make(request: request).map(\.data)
-    }
-}

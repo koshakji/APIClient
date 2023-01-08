@@ -56,27 +56,3 @@ public extension CombineClient {
         return self.publisher(request: request, body: .init())
     }
 }
-
-@available(macOS 10.15.0, *)
-@available(iOS 13.0, *)
-public extension CombineClient {
-    func publisher<Request: RequestProtocol>(request: Request, headers: Request.Headers) -> AnyPublisher<Request.Response, Error> where Request.Body == Nothing {
-        return self.publisher(request: request, headers: headers).map(\.data).eraseToAnyPublisher()
-    }
-    
-    func publisher<Request: RequestProtocol>(request: Request, body: Request.Body) -> AnyPublisher<Request.Response, Error> where Request.Headers == Nothing {
-        return self.publisher(request: request, body: body).map(\.data).eraseToAnyPublisher()
-    }
-    
-    func publisher<Request: RequestProtocol>(request: Request) -> AnyPublisher<Request.Response, Error> where Request.Body == Nothing, Request.Headers == Nothing {
-        return self.publisher(request: request).map(\.data).eraseToAnyPublisher()
-    }
-    
-    func publisher<Request: RequestProtocol>(request: Request, body: Request.Body) -> AnyPublisher<Request.Response, Error> where Request.Headers == [String: String] {
-        return self.publisher(request: request, body: body).map(\.data).eraseToAnyPublisher()
-    }
-    
-    func publisher<Request: RequestProtocol>(request: Request) -> AnyPublisher<Request.Response, Error> where Request.Body == Nothing, Request.Headers == [String: String] {
-        return self.publisher(request: request).map(\.data).eraseToAnyPublisher()
-    }
-}
