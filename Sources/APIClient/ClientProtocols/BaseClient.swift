@@ -14,7 +14,12 @@ public protocol BaseClient {
     var decoder: Decoder { get }
     var session: URLSession { get }
     
-    func createURLRequest<Request: RequestProtocol>(endpoint: Request, body: Request.Body, headers: Request.Headers) throws -> URLRequest
+    func createURLRequest<Request: RequestProtocol>(
+        endpoint: Request,
+        body: Request.Body,
+        headers: Request.Headers,
+        queries: Request.Queries
+    ) throws -> URLRequest
     
     func customize(request: inout URLRequest)
 }
@@ -23,8 +28,13 @@ public protocol BaseClient {
 public extension BaseClient {
     func customize(request: inout URLRequest) {}
     
-    func createURLRequest<Request: RequestProtocol>(endpoint: Request, body: Request.Body, headers: Request.Headers) throws -> URLRequest {
-        guard let url = endpoint.createURL() else { throw URLError(.unsupportedURL) }
+    func createURLRequest<Request: RequestProtocol>(
+        endpoint: Request,
+        body: Request.Body,
+        headers: Request.Headers,
+        queries: Request.Queries
+    ) throws -> URLRequest {
+        guard let url = endpoint.createURL(with: queries) else { throw URLError(.unsupportedURL) }
         var request = URLRequest(url: url)
         endpoint.prepare(request: &request, with: headers)
         self.customize(request: &request)
