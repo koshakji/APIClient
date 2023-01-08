@@ -1,6 +1,7 @@
 import Foundation
 
 
+/// HTTP Method
 public enum HTTPMethod {
     case get, post, patch, put, delete, other(String)
     
@@ -23,14 +24,33 @@ public enum HTTPMethod {
 }
 
 
+/// Protocol defining an HTTP request
 public protocol RequestProtocol: GroupProtocol {
+    
+    /// HTTP body type (`Encodable`).
     associatedtype Body: Encodable
+    
+    /// HTTP headers type (``StringDictionaryConvertible``).
     associatedtype Headers: StringDictionaryConvertible
+    
+    /// URL queries type (``StringDictionaryConvertible``).
     associatedtype Queries: StringDictionaryConvertible
+    
+    /// HTTP response body type (`Decodable`).
     associatedtype Response: Decodable
+    
+    
+    /// HTTP method of the request.
     var method: HTTPMethod { get }
+    
+    /// URL queries of the request.
     var queries: Queries? { get }
     
+    
+    /// Setup a URLRequest as preferred.
+    /// - Parameters:
+    ///   - request: URLRequest that's being setup.
+    ///   - data: HTTP headers data.
     func prepare(request: inout URLRequest, with data: Headers)
 }
 
@@ -46,6 +66,9 @@ public extension RequestProtocol {
 
 
 public extension RequestProtocol {
+    
+    /// Create a `URL` object from the request components.
+    /// - Returns: An optional `URL` object.
     func createURL() -> URL? {
         var components = URLComponents()
         components.scheme = self.scheme
@@ -60,6 +83,7 @@ public extension RequestProtocol {
 }
 
 
+/// Fully customizable request type
 public struct AdvancedRequest<Body, Headers, Queries, Response>: RequestProtocol
 where Body: Encodable, Headers: StringDictionaryConvertible, Queries: StringDictionaryConvertible, Response: Decodable {
     public let scheme: String
@@ -112,5 +136,8 @@ public extension AdvancedRequest where Queries == Nothing {
     }
 }
 
+/// Basic request type with a generic body and response
 public typealias Request<Body, Response> = AdvancedRequest<Body, [String: String], [String: String], Response> where Body: Encodable, Response: Decodable
+
+/// Basic bearer-authorized request type with a generic body and response
 public typealias AuthenticatedRequest<Body, Response> = AdvancedRequest<Body, BearerHeaders<[String: String]>, [String: String], Response> where Body: Encodable, Response: Decodable

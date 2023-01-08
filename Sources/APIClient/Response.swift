@@ -7,11 +7,14 @@
 
 import Foundation
 
+/// Response container wrapping the actual request response type and ``ResponseMetadata``
 public struct Response<Response: Decodable> {
     public let data: Response
     public let meta: ResponseMetadata?
 }
 
+
+/// HTTP Response metadata
 public struct ResponseMetadata {
     let statusCode: Int
     let headers: [AnyHashable: Any]
