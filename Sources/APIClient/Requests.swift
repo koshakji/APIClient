@@ -29,7 +29,6 @@ public protocol RequestProtocol: GroupProtocol {
     associatedtype Queries: StringDictionaryConvertible
     associatedtype Response: Decodable
     var method: HTTPMethod { get }
-    var queries: Queries? { get }
     
     func prepare(request: inout URLRequest, with data: Headers)
 }
@@ -46,13 +45,13 @@ public extension RequestProtocol {
 
 
 public extension RequestProtocol {
-    func createURL() -> URL? {
+    func createURL(with queries: Queries) -> URL? {
         var components = URLComponents()
         components.scheme = self.scheme
         components.host = self.host
         components.path = self.path
         components.port = self.port
-        if let queries = queries, !queries.dictionary().isEmpty {
+        if !queries.dictionary().isEmpty {
             components.queryItems = queries.dictionary().map { URLQueryItem(name: $0.key, value: $0.value) }
         }
         return components.url
@@ -74,41 +73,13 @@ where Body: Encodable, Headers: StringDictionaryConvertible, Queries: StringDict
         host: String,
         port: Int? = nil,
         path: String,
-        method: HTTPMethod = .get,
-        queries: Queries? = nil
+        method: HTTPMethod = .get
     ) {
         self.scheme = scheme
         self.host = host
         self.port = port
         self.path = path
         self.method = method
-        self.queries = queries
-    }
-}
-
-
-public extension AdvancedRequest where Queries == [String: String] {
-    init(
-        scheme: String = "https",
-        host: String,
-        port: Int? = nil,
-        path: String,
-        method: HTTPMethod = .get
-    ) {
-        self.init(scheme: scheme, host: host, port: port, path: path, method: method, queries: [:])
-    }
-}
-
-
-public extension AdvancedRequest where Queries == Nothing {
-    init(
-        scheme: String = "https",
-        host: String,
-        port: Int? = nil,
-        path: String,
-        method: HTTPMethod = .get
-    ) {
-        self.init(scheme: scheme, host: host, port: port, path: path, method: method, queries: .init())
     }
 }
 
