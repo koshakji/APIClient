@@ -20,7 +20,7 @@ let listUsers: Request<Nothing, [User]> = users.endpoint(path: "/")
 And finally you can make that request in three different ways:
 1. Using async/await:
 ```swift
-let result: Result<[User], Error> = await client.make(request: listUsers)
+let result = await client.make(request: listUsers).map(\.data)
     
 switch result {
 case .success(let users):
@@ -31,19 +31,21 @@ case .failure(let error):
 ```
 2. Using Combine:
 ```swift
-let cancellable = client.publisher(request: listUsers).sink(
-    receiveCompletion: { completion in
-        switch completion {
-        case .failure(let error):
-            print(error)
-        case .finished:
-            break
+let cancellable = client.publisher(request: listUsers)
+    .map(\.data)
+    .sink(
+        receiveCompletion: { completion in
+            switch completion {
+            case .failure(let error):
+                print(error)
+            case .finished:
+                break
+            }
+        },
+        receiveValue: { users in
+            print("Combine: \(users.count)")
         }
-    },
-    receiveValue: { (users: [User]) in
-        print("Combine: \(users.count)")
-    }
-)
+    )
 ```
 3. Using a completion handler:
 ```swift
