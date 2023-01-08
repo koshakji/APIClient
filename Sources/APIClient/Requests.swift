@@ -1,8 +1,25 @@
 import Foundation
 
 
-public enum HTTPMethod: String {
-    case get, post, patch, put, delete
+public enum HTTPMethod {
+    case get, post, patch, put, delete, other(String)
+    
+    var text: String {
+        switch self {
+        case .get:
+            return "GET"
+        case .post:
+            return "POST"
+        case .patch:
+            return "PATCH"
+        case .put:
+            return "PUT"
+        case .delete:
+            return "DELETE"
+        case .other(let method):
+            return method
+        }
+    }
 }
 
 
@@ -23,7 +40,7 @@ public extension RequestProtocol {
         for (key, value) in headers.dictionary() {
             request.addValue(value, forHTTPHeaderField: key)
         }
-        request.httpMethod = self.method.rawValue.uppercased()
+        request.httpMethod = self.method.text.uppercased()
     }
 }
 
