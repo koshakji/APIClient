@@ -21,6 +21,12 @@ extension Dictionary: StringDictionaryConvertible where Key == String, Value == 
     public func dictionary() -> [String : String] { return self }
 }
 
+extension Optional: StringDictionaryConvertible where Wrapped: StringDictionaryConvertible {
+    public func dictionary() -> [String : String] {
+        return self?.dictionary() ?? [:]
+    }
+}
+
 public struct BearerHeaders<Others: StringDictionaryConvertible>: StringDictionaryConvertible {
     let token: String
     let otherHeaders: Others
