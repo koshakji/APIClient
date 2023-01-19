@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct APIClient: BaseClient {
+public class APIClient: BaseClient {
     public let encoder: JSONEncoder
     public let decoder: JSONDecoder
     public let session: URLSession
