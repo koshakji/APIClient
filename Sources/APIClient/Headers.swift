@@ -11,7 +11,9 @@ public protocol StringDictionaryConvertible {
     func dictionary() -> [String: String]
 }
 
-public struct Nothing: Codable {}
+public struct Nothing: Codable {
+    public init() {}
+}
 
 extension Nothing: StringDictionaryConvertible {
     public func dictionary() -> [String : String] { [:] }
