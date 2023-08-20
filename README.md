@@ -2,6 +2,8 @@
 
 APIClient is a Swift package for interacting with RESTful APIs, relying on URLRequest under the hood, but providing a nicer API.
 
+**Important Note:** This package is still not API-stable, and won't be until version `1.0.0` is released
+
 ## Example usage
 You can start by initializing an `APIClient`:
 ```swift
