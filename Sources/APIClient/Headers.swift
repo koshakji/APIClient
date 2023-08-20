@@ -7,29 +7,31 @@
 
 import Foundation
 
-public protocol StringDictionaryConvertible {
-    func dictionary() -> [String: String]
+public typealias KeyValuePair<T> = (key: String, value: T)
+
+public protocol StringKeyValueConvertible {
+    func keyValues() -> [KeyValuePair<String>]
 }
 
 public struct Nothing: Codable {
     public init() {}
 }
 
-extension Nothing: StringDictionaryConvertible {
-    public func dictionary() -> [String : String] { [:] }
+extension Nothing: StringKeyValueConvertible {
+    public func keyValues() -> [KeyValuePair<String>] { [] }
 }
 
-extension Dictionary: StringDictionaryConvertible where Key == String, Value == String {
-    public func dictionary() -> [String : String] { return self }
+extension Dictionary: StringKeyValueConvertible where Key == String, Value == String {
+    public func keyValues() -> [KeyValuePair<String>] { return self.map { $0 } }
 }
 
-extension Optional: StringDictionaryConvertible where Wrapped: StringDictionaryConvertible {
-    public func dictionary() -> [String : String] {
-        return self?.dictionary() ?? [:]
+extension Optional: StringKeyValueConvertible where Wrapped: StringKeyValueConvertible {
+    public func keyValues() -> [KeyValuePair<String>] {
+        return self?.keyValues() ?? []
     }
 }
 
-public struct BearerHeaders<Others: StringDictionaryConvertible>: StringDictionaryConvertible {
+public struct BearerHeaders<Others: StringKeyValueConvertible>: StringKeyValueConvertible {
     let token: String
     let otherHeaders: Others
     
@@ -38,10 +40,8 @@ public struct BearerHeaders<Others: StringDictionaryConvertible>: StringDictiona
         self.otherHeaders = otherHeaders
     }
     
-    public func dictionary() -> [String : String] {
-        var headers = self.otherHeaders.dictionary()
-        headers["Authentication"] = "Bearer \(token)"
-        return headers
+    public func keyValues() -> [KeyValuePair<String>] {
+        self.otherHeaders.keyValues() + [("Authentication", "Bearer \(token)")]
     }
 }
 

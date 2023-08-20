@@ -25,8 +25,8 @@ public enum HTTPMethod {
 
 public protocol RequestProtocol: GroupProtocol {
     associatedtype Body: Encodable
-    associatedtype Headers: StringDictionaryConvertible
-    associatedtype Queries: StringDictionaryConvertible
+    associatedtype Headers: StringKeyValueConvertible
+    associatedtype Queries: StringKeyValueConvertible
     associatedtype Response: Decodable
     var method: HTTPMethod { get }
     
@@ -36,7 +36,7 @@ public protocol RequestProtocol: GroupProtocol {
 
 public extension RequestProtocol {
     func prepare(request: inout URLRequest, with headers: Headers) {
-        for (key, value) in headers.dictionary() {
+        for (key, value) in headers.keyValues() {
             request.addValue(value, forHTTPHeaderField: key)
         }
         request.httpMethod = self.method.text.uppercased()
@@ -51,8 +51,8 @@ public extension RequestProtocol {
         components.host = self.host
         components.path = self.path
         components.port = self.port
-        if !queries.dictionary().isEmpty {
-            components.queryItems = queries.dictionary().map { URLQueryItem(name: $0.key, value: $0.value) }
+        if !queries.keyValues().isEmpty {
+            components.queryItems = queries.keyValues().map { URLQueryItem(name: $0.key, value: $0.value) }
         }
         return components.url
     }
@@ -60,7 +60,7 @@ public extension RequestProtocol {
 
 
 public struct AdvancedRequest<Body, Headers, Queries, Response>: RequestProtocol
-where Body: Encodable, Headers: StringDictionaryConvertible, Queries: StringDictionaryConvertible, Response: Decodable {
+where Body: Encodable, Headers: StringKeyValueConvertible, Queries: StringKeyValueConvertible, Response: Decodable {
     public let scheme: String
     public let host: String
     public let port: Int?
