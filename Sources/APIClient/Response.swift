@@ -13,8 +13,8 @@ public struct Response<Response: Decodable> {
 }
 
 public struct ResponseMetadata {
-    let statusCode: Int
-    let headers: [AnyHashable: Any]
+    public let statusCode: Int
+    public let headers: [AnyHashable: Any]
     
     public init(statusCode: Int, headers: [AnyHashable: Any]) {
         self.statusCode = statusCode
