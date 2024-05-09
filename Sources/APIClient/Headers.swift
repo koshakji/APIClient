@@ -41,7 +41,7 @@ public struct BearerHeaders<Others: StringKeyValueConvertible>: StringKeyValueCo
     }
     
     public func keyValues() -> [KeyValuePair<String>] {
-        self.otherHeaders.keyValues() + [("Authentication", "Bearer \(token)")]
+        self.otherHeaders.keyValues() + [("Authorization", "Bearer \(token)")]
     }
 }
 
