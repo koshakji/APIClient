@@ -22,12 +22,11 @@ let listUsers: Request<Nothing, [User]> = users.request(path: "/")
 And finally you can make that request in three different ways:
 1. Using async/await:
 ```swift
-let result = await client.make(request: listUsers).map(\.data)
-    
-switch result {
-case .success(let users):
+do {
+    let response = try await client.make(request: listUsers)
+    let users = response.data
     print("Async: \(users.count)")
-case .failure(let error):
+} catch {
     print(error)
 }
 ```
