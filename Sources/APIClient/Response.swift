@@ -8,22 +8,21 @@
 import Foundation
 
 public protocol LocalizedErrorResponse {
-    var localizedDescription: String { get }
+    var errorDescription: String { get }
 }
 
-public struct APIClientError<T>: Error {
+public struct APIClientError<T>: LocalizedError {
     public let responseData: T?
     public let responseMeta: ResponseMetadata?
     public let underlyingError: Error
 }
+
+extension APIClientError where T: LocalizedErrorResponse {
+    public var errorDescription: String? { self.responseData?.errorDescription }
+}
+
 extension APIClientError {
-    public var localizedDescription: String {
-        if let responseData = responseData as? LocalizedErrorResponse {
-            return responseData.localizedDescription
-        } else {
-            return underlyingError.localizedDescription
-        }
-    }
+    public var errorDescription: String? { (underlyingError as? LocalizedError)?.errorDescription }
 }
 
 
