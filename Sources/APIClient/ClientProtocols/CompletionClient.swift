@@ -6,7 +6,7 @@
 //
 
 public protocol CompletionClient: BaseClient {
-    typealias Completion<Request: RequestProtocol> = (Result<Response<Request.Response>, Error>) -> Void
+    typealias Completion<Request: RequestProtocol> = (Result<Response<Request.Response>, APIClientError<Request.ErrorResponse>>) -> Void
     
     func make<Request: RequestProtocol>(
         request: Request,
@@ -22,7 +22,7 @@ public extension CompletionClient {
             let request = try self.createURLRequest(endpoint: request, body: body, headers: headers, queries: queries)
             session.dataTask(with: request) { [decoder] data, response, error in
                 if let error = error {
-                    completion(.failure(error))
+                    completion(.failure(buildError(underlyingError: error)))
                     return
                 }
                 
@@ -31,12 +31,12 @@ public extension CompletionClient {
                         let result = try decoder.decode(Request.Response.self, from: data)
                         completion(.success(.init(data: result, meta: .init(from: response))))
                     } catch {
-                        completion(.failure(error))
+                        completion(.failure(buildError(data: data, response: response, underlyingError: error)))
                     }
                 }
             }.resume()
         } catch {
-            completion(.failure(error))
+            completion(.failure(buildError(underlyingError: error)))
         }
     }
 }

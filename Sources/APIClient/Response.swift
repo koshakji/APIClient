@@ -7,6 +7,12 @@
 
 import Foundation
 
+public struct APIClientError<T>: Error {
+    public let responseData: T?
+    public let responseMeta: ResponseMetadata?
+    public let underlyingError: Error
+}
+
 public struct Response<Response: Decodable> {
     public let data: Response
     public let meta: ResponseMetadata?

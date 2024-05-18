@@ -15,9 +15,9 @@ let client = APIClient()
 Then a request:
 ```swift
 let users = Group(host: "jsonplaceholder.typicode.com", path: "/users")
-let listUsers: Request<Nothing, [User]> = users.request(path: "/")
+let listUsers: Request<Nothing, [User], Nothing> = users.request(path: "/")
 ```
-`Nothing` is the request's body, and `[User]` is the response
+`Nothing` is the request's body, `[User]` is the successful response, `Nothing` is the error response. 
 
 And finally you can make that request in three different ways:
 1. Using async/await:
