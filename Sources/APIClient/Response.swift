@@ -7,18 +7,17 @@
 
 import Foundation
 
-public protocol LocalizedErrorResponse {
-    var errorDescription: String { get }
-}
-
-public struct APIClientError<T>: Error {
-    public let responseData: T?
+public struct APIClientError<ResponseError>: Error {
+    public let responseData: ResponseError?
     public let responseMeta: ResponseMetadata?
     public let underlyingError: Error
 }
 
-extension APIClientError: LocalizedError where T: LocalizedErrorResponse {
+extension APIClientError: LocalizedError where ResponseError: LocalizedError {
     public var errorDescription: String? { self.responseData?.errorDescription }
+    public var failureReason: String? { self.responseData?.failureReason }
+    public var recoverySuggestion: String? { self.responseData?.recoverySuggestion }
+    public var helpAnchor: String? { self.responseData?.helpAnchor }
 }
 
 
