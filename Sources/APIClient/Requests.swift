@@ -84,5 +84,5 @@ where Body: Encodable, Headers: StringKeyValueConvertible, Queries: StringKeyVal
     }
 }
 
-public typealias Request<Body, Response, ErrorResponse> = AdvancedRequest<Body, [String: String], [String: String], Response, Data> where Body: Encodable, Response: Decodable, ErrorResponse: Decodable
+public typealias Request<Body, Response, ErrorResponse> = AdvancedRequest<Body, [String: String], [String: String], Response, ErrorResponse> where Body: Encodable, Response: Decodable, ErrorResponse: Decodable
 public typealias AuthenticatedRequest<Body, Response, ErrorResponse> = AdvancedRequest<Body, BearerHeaders<[String: String]>, [String: String], Response, ErrorResponse> where Body: Encodable, Response: Decodable, ErrorResponse: Decodable
