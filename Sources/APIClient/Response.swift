@@ -11,18 +11,14 @@ public protocol LocalizedErrorResponse {
     var errorDescription: String { get }
 }
 
-public struct APIClientError<T>: LocalizedError {
+public struct APIClientError<T>: Error {
     public let responseData: T?
     public let responseMeta: ResponseMetadata?
     public let underlyingError: Error
 }
 
-extension APIClientError where T: LocalizedErrorResponse {
+extension APIClientError: LocalizedError where T: LocalizedErrorResponse {
     public var errorDescription: String? { self.responseData?.errorDescription }
-}
-
-extension APIClientError {
-    public var errorDescription: String? { (underlyingError as? LocalizedError)?.errorDescription }
 }
 
 
