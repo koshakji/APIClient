@@ -50,24 +50,17 @@ public extension BaseClient {
         response: URLResponse? = nil,
         underlyingError: Error
     ) -> APIClientError<T> where T: Decodable {
-        let errorResponse: T?
-        let meta: ResponseMetadata?
+        let meta = response.flatMap(ResponseMetadata.init(from:))
         if let data {
-            errorResponse = try? decoder.decode(errorResponseType, from: data)
+            let errorResponse = try? decoder.decode(errorResponseType, from: data)
+            if let errorResponse {
+                return .responseError(errorResponse, meta: meta, underlyingError: underlyingError)
+            } else {
+                return .unexpectedResponseError(data: data, meta: meta, underlyingError: underlyingError)
+            }
         } else {
-            errorResponse = nil
+            return .otherError(underlyingError)
         }
-        
-        if let response {
-            meta = .init(from: response)
-        } else {
-            meta = nil
-        }
-        return APIClientError(
-            responseData: errorResponse,
-            responseMeta: meta,
-            underlyingError: underlyingError
-        )
     }
 }
 

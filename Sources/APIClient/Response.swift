@@ -7,19 +7,31 @@
 
 import Foundation
 
-public struct APIClientError<ResponseError>: Error {
-    public let responseData: ResponseError?
-    public let responseMeta: ResponseMetadata?
-    public let underlyingError: Error
+public enum APIClientError<ResponseError>: Error {
+    case responseError(ResponseError, meta: ResponseMetadata?, underlyingError: Error)
+    case unexpectedResponseError(data: Data, meta: ResponseMetadata?, underlyingError: Error)
+    case otherError(Error)
 }
 
-extension APIClientError: LocalizedError where ResponseError: LocalizedError {
-    public var errorDescription: String? { self.responseData?.errorDescription }
-    public var failureReason: String? { self.responseData?.failureReason }
-    public var recoverySuggestion: String? { self.responseData?.recoverySuggestion }
-    public var helpAnchor: String? { self.responseData?.helpAnchor }
+extension APIClientError: LocalizedError {
+    private var localizedError: LocalizedError? {
+        switch self {
+        case .responseError(let response, _, _) where response is LocalizedError:
+            return (response as? LocalizedError)
+        case .otherError(let error) where error is LocalizedError,
+            .responseError(_, _, underlyingError: let error) where error is LocalizedError,
+            .unexpectedResponseError(_, _, underlyingError: let error) where error is LocalizedError:
+            return (error as? LocalizedError)
+        default:
+            return nil
+        }
+    }
+    
+    public var errorDescription: String? { self.localizedError?.errorDescription }
+    public var failureReason: String? { self.localizedError?.failureReason }
+    public var recoverySuggestion: String? { self.localizedError?.recoverySuggestion }
+    public var helpAnchor: String? { self.localizedError?.helpAnchor }
 }
-
 
 public struct Response<Response: Decodable> {
     public let data: Response
