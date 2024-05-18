@@ -7,11 +7,25 @@
 
 import Foundation
 
+public protocol LocalizedErrorResponse {
+    var localizedDescription: String { get }
+}
+
 public struct APIClientError<T>: Error {
     public let responseData: T?
     public let responseMeta: ResponseMetadata?
     public let underlyingError: Error
 }
+extension APIClientError {
+    public var localizedDescription: String {
+        if let responseData = responseData as? LocalizedErrorResponse {
+            return responseData.localizedDescription
+        } else {
+            return underlyingError.localizedDescription
+        }
+    }
+}
+
 
 public struct Response<Response: Decodable> {
     public let data: Response
