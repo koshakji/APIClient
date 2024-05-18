@@ -29,10 +29,23 @@ public extension AsyncClient {
         queries: Request.Queries
     ) async throws -> Response<Request.Response> {
         let request = try self.createURLRequest(endpoint: request, body: body, headers: headers, queries: queries)
-        let (data, response) = try await self.session.data(for: request)
-        let result = try decoder.decode(Request.Response.self, from: data)
-
-        return .init(data: result, meta: .init(from: response))
+        
+        var data: Data?
+        var response: URLResponse?
+        do {
+            let (localData, localResponse) = try await self.session.data(for: request)
+            data = localData
+            response = localResponse
+            let result = try decoder.decode(Request.Response.self, from: localData)
+            return .init(data: result, meta: .init(from: localResponse))
+        } catch {
+            throw buildError(
+                errorResponseType: Request.ErrorResponse.self,
+                data: data,
+                response: response,
+                underlyingError: error
+            )
+        }
     }
 }
 

@@ -43,5 +43,31 @@ public extension BaseClient {
         }
         return request
     }
+    
+    func buildError<T>(
+        errorResponseType: T.Type = T.self,
+        data: Data? = nil,
+        response: URLResponse? = nil,
+        underlyingError: Error
+    ) -> APIClientError<T> where T: Decodable {
+        let errorResponse: T?
+        let meta: ResponseMetadata?
+        if let data {
+            errorResponse = try? decoder.decode(errorResponseType, from: data)
+        } else {
+            errorResponse = nil
+        }
+        
+        if let response {
+            meta = .init(from: response)
+        } else {
+            meta = nil
+        }
+        return APIClientError(
+            responseData: errorResponse,
+            responseMeta: meta,
+            underlyingError: underlyingError
+        )
+    }
 }
 

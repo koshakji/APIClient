@@ -28,6 +28,7 @@ public protocol RequestProtocol: GroupProtocol {
     associatedtype Headers: StringKeyValueConvertible
     associatedtype Queries: StringKeyValueConvertible
     associatedtype Response: Decodable
+    associatedtype ErrorResponse: Decodable
     var method: HTTPMethod { get }
     
     func prepare(request: inout URLRequest, with data: Headers)
@@ -59,8 +60,8 @@ public extension RequestProtocol {
 }
 
 
-public struct AdvancedRequest<Body, Headers, Queries, Response>: RequestProtocol
-where Body: Encodable, Headers: StringKeyValueConvertible, Queries: StringKeyValueConvertible, Response: Decodable {
+public struct AdvancedRequest<Body, Headers, Queries, Response, ErrorResponse>: RequestProtocol
+where Body: Encodable, Headers: StringKeyValueConvertible, Queries: StringKeyValueConvertible, Response: Decodable, ErrorResponse: Decodable {
     public let scheme: String
     public let host: String
     public let port: Int?
@@ -83,5 +84,5 @@ where Body: Encodable, Headers: StringKeyValueConvertible, Queries: StringKeyVal
     }
 }
 
-public typealias Request<Body, Response> = AdvancedRequest<Body, [String: String], [String: String], Response> where Body: Encodable, Response: Decodable
-public typealias AuthenticatedRequest<Body, Response> = AdvancedRequest<Body, BearerHeaders<[String: String]>, [String: String], Response> where Body: Encodable, Response: Decodable
+public typealias Request<Body, Response, ErrorResponse> = AdvancedRequest<Body, [String: String], [String: String], Response, Data> where Body: Encodable, Response: Decodable, ErrorResponse: Decodable
+public typealias AuthenticatedRequest<Body, Response, ErrorResponse> = AdvancedRequest<Body, BearerHeaders<[String: String]>, [String: String], Response, ErrorResponse> where Body: Encodable, Response: Decodable, ErrorResponse: Decodable
