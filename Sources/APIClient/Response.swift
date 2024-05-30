@@ -37,7 +37,7 @@ extension APIClientError: LocalizedError {
     }
     
     public var errorDescription: String? {
-        self.localizedError?.errorDescription ?? (underlyingError as? LocalizedError)?.localizedDescription
+        self.localizedError?.errorDescription ?? (underlyingError as? LocalizedError)?.errorDescription
     }
     public var failureReason: String? {
         self.localizedError?.failureReason ?? (underlyingError as? LocalizedError)?.failureReason
