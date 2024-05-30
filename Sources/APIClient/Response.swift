@@ -27,10 +27,27 @@ extension APIClientError: LocalizedError {
         }
     }
     
-    public var errorDescription: String? { self.localizedError?.errorDescription }
-    public var failureReason: String? { self.localizedError?.failureReason }
-    public var recoverySuggestion: String? { self.localizedError?.recoverySuggestion }
-    public var helpAnchor: String? { self.localizedError?.helpAnchor }
+    public var underlyingError: Error {
+        switch self {
+        case .responseError(_, meta: _, underlyingError: let error),
+                .unexpectedResponseError(data: _, meta: _, underlyingError: let error),
+                .otherError(let error):
+            return error
+        }
+    }
+    
+    public var errorDescription: String? {
+        self.localizedError?.errorDescription ?? (underlyingError as? LocalizedError)?.localizedDescription
+    }
+    public var failureReason: String? {
+        self.localizedError?.failureReason ?? (underlyingError as? LocalizedError)?.failureReason
+    }
+    public var recoverySuggestion: String? {
+        self.localizedError?.recoverySuggestion ?? (underlyingError as? LocalizedError)?.recoverySuggestion
+    }
+    public var helpAnchor: String? {
+        self.localizedError?.helpAnchor ?? (underlyingError as? LocalizedError)?.helpAnchor
+    }
 }
 
 public struct Response<Response: Decodable> {
